@@ -7,3 +7,16 @@ before_install: # series of commands executed before tests are run or before dep
 
 script: # series of commands executed to run our test suite. Travis CI will watch the output status codes of the following lines and raise error if it gets anything other that "0" status code. The commands below should leave the terminal control, else Travis will think that the command is still running and never exit.
   - docker run -e CI=true raviblu3/docker-react npm run test -- --coverage # for -e CI=true look at lecture 93.
+
+deploy:
+  provider: elasticbeanstalk # travis automatically know that you are using AWS (not GCP, digital ocean or Azure) from the provider data.
+  region: "us-west-2"
+  app: "docker" # this is exactly the application name defined in elastic beanstalk
+  env: "Docker-env"
+  bucket_name: "elasticbeanstalk-us-west-2-306476627547" # travis will zip all the github files in to a single file and upload it to s3. This is where you should mention the s3 bucket name. This is bucket from where elastic beanstalk will pick the file for deployment. This bucket is automatically created when you create elastic beanstalk.
+  bucket_path: "docker" # same as app name
+  on:
+    branch: master # only deploy code to beanstalk when there is any change in the "master" branch of our repository.
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
