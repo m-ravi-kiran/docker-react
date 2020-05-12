@@ -1,0 +1,9 @@
+sudo: required # need super user level permissions whenever we are dealing with docker.
+services:
+  - docker # installs docker
+
+before_install: # series of commands executed before tests are run or before deployment.
+  - docker build -t raviblu3/docker-react -f Dockerfile.dev .
+
+script: # series of commands executed to run our test suite. Travis CI will watch the output status codes of the following lines and raise error if it gets anything other that "0" status code. The commands below should leave the terminal control, else Travis will think that the command is still running and never exit.
+  - docker run -e CI=true raviblu3/docker-react npm run test -- --coverage # for -e CI=true look at lecture 93.
