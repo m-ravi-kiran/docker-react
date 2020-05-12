@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    stdin_open: true
+    build:
+      context: . # the folder to find the custom Dockerfile
+      dockerfile: Dockerfile.dev # look in the context directory and use the file Dockerfile.dev in the build process
+    ports:
+      - "3000:3000"
+    volumes: # this is the -v part of the docker run command with docker volumes
+      - /app/node_modules
+      - .:/app # map current folder outside the container to the app folder inside the container.
+  tests: # only used for running the test cases
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"] # this is to override the default startup command of our image which is npm run start.
